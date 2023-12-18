@@ -1,10 +1,12 @@
 package backendtestjava.parking.entity;
 
+import backendtestjava.parking.dto.CompanyDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,9 +26,20 @@ public class Company {
     private String companyCNPJ;
     @NotBlank @OneToOne
     @PrimaryKeyJoinColumn
-    private Address companyAddress;
+    private Address companyCEP;
     @NotBlank
     private String companyPhone;
+    @NotNull
     private Long bikeOccupation;
+    @NotNull
     private Long carOccupation;
+
+    public Company(CompanyDTO companyDTO){
+        this.companyId = companyDTO.id();
+        this.companyCNPJ = companyDTO.companyCNPJ();
+        this.companyCEP = companyDTO.address();
+        this.companyPhone = companyDTO.phone();
+        this.bikeOccupation = companyDTO.bikes();
+        this.carOccupation = companyDTO.cars();
+    }
 }

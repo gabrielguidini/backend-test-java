@@ -1,12 +1,13 @@
 package backendtestjava.parking.service;
 
-import backendtestjava.parking.dto.CompanyDTO;
 import backendtestjava.parking.entity.Company;
 import backendtestjava.parking.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @Service
@@ -22,8 +23,14 @@ public class CompanyService {
         return companyRepository.findAll();
     }
 
-//    public ResponseEntity<?> createCompany(CompanyDTO company) {
-//
-//    }
+    public ResponseEntity<?> createCompany(Company company, UriComponentsBuilder uriComponentsBuilder) {
+
+        URI uri = uriComponentsBuilder.path("/company").buildAndExpand(companyRepository.
+                findById(company.getCompanyId()).get()).toUri();
+
+        return companyRepository.findById(companyRepository.save(company)
+                .getCompanyId()).isPresent() ?
+                ResponseEntity.created(uri).build() : ResponseEntity.badRequest().build();
+    }
 
 }
