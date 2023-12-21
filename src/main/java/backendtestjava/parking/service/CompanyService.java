@@ -2,15 +2,15 @@ package backendtestjava.parking.service;
 
 import backendtestjava.parking.entity.Company;
 import backendtestjava.parking.repository.CompanyRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 
 @Service
+@Slf4j
 public class CompanyService {
     private final CompanyRepository companyRepository;
     //contructor injection > field injection
@@ -19,18 +19,18 @@ public class CompanyService {
         this.companyRepository = companyRepository;
     }
 
-    public List<Company> getAllCompanies () {
+    public List<Company> findingCompanies() {
+        log.info("CompanyService.findingCompanies() -> init process");
         return companyRepository.findAll();
     }
 
-    public ResponseEntity<?> createCompany(Company company, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<Company> createCompany(Company company) {
 
-        URI uri = uriComponentsBuilder.path("/company").buildAndExpand(companyRepository.
-                findById(company.getCompanyId()).get()).toUri();
+//        URI uri = uriComponentsBuilder.path("/company").buildAndExpand(companyRepository.
+//                findById(company.getCompanyId()).get()).toUri();
 
         return companyRepository.findById(companyRepository.save(company)
-                .getCompanyId()).isPresent() ?
-                ResponseEntity.created(uri).build() : ResponseEntity.badRequest().build();
+                .getCompanyId()).isPresent() ? ResponseEntity.status(201).build() : ResponseEntity.badRequest().build();
     }
 
 }

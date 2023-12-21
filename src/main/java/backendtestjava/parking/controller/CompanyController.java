@@ -1,6 +1,5 @@
 package backendtestjava.parking.controller;
 
-import backendtestjava.parking.dto.AddressDTO;
 import backendtestjava.parking.dto.CompanyDTO;
 import backendtestjava.parking.entity.Address;
 import backendtestjava.parking.entity.Company;
@@ -11,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,20 +29,23 @@ public class CompanyController {
 
     @GetMapping
     public List<Company> getAllCompanies() {
-        return companyService.getAllCompanies();
+        log.info("CompanyService.findingCompanies() -> finished process");
+        return companyService.findingCompanies();
     }
 
     @PostMapping
-    public ResponseEntity<?> createCompany (@RequestParam @Valid String companyCNPJ,
+    public ResponseEntity<Company> createCompany (@RequestParam @Valid String companyCNPJ,
                                             @RequestParam @Valid String companyCEP,
+                                            @RequestParam String companyAddressNumber,
                                             @RequestParam String companyPhone,
                                             @RequestParam Long cars,
-                                            @RequestParam Long bikes,
-                                            UriComponentsBuilder uriComponentsBuilder
+                                            @RequestParam Long bikes
                                             ) throws Exception {
+
         log.info("CompanyController.createCompany() -> init process");
 
         Address address = addressService.CEPfounder(companyCEP);
+        address.setComplemento(companyAddressNumber);
         address.setCEP(companyCEP);
 
         try {
@@ -58,7 +59,8 @@ public class CompanyController {
                     .build();
 
             log.info("CompanyController.createCompany() -> finished process");
-            return companyService.createCompany(new Company(companyDTO),uriComponentsBuilder);
+
+            return companyService.createCompany(new Company(companyDTO));
 
         } catch (Exception e) {
             log.error("CompanyController.createCompany() -> ERROR {}", e.getMessage(), e);

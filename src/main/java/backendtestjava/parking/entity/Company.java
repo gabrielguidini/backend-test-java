@@ -1,10 +1,7 @@
 package backendtestjava.parking.entity;
 
 import backendtestjava.parking.dto.CompanyDTO;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,8 +21,7 @@ public class Company {
     private UUID companyId = UUID.randomUUID();
     @NotBlank
     private String companyCNPJ;
-    @NotBlank @OneToOne
-    @PrimaryKeyJoinColumn
+    @NotBlank @OneToOne(cascade = CascadeType.ALL)
     private Address companyCEP;
     @NotBlank
     private String companyPhone;

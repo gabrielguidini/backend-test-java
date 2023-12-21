@@ -1,20 +1,18 @@
 package backendtestjava.parking.service;
 
-import backendtestjava.parking.dto.AddressDTO;
 import backendtestjava.parking.entity.Address;
 import backendtestjava.parking.repository.AddressRepository;
 import com.google.gson.Gson;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 
 @Service
 @Slf4j
@@ -35,7 +33,7 @@ public class AddressService {
 
             InputStream is = connection.getInputStream();
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(is,"UTF-8"));
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 
             String cep = "";
 
@@ -47,15 +45,19 @@ public class AddressService {
 
             }
 
-            cep = commingCEP;
+            Address address = new Gson().fromJson(jsonCep.toString(), Address.class);
+
+            log.info("AddressService.CEPfounder() -> saving process");
+
+            addressRepository.save(address);
 
             log.info("AddressService.CEPfounder() -> finished process");
 
-            return new Gson().fromJson(jsonCep.toString(), Address.class);
+            return address;
 
         } catch (Exception e){
             log.info("AddressService.CEPfounder() -> ERROR {}", e.getMessage());
-            throw new Exception("ERROR CAUSE -> {} {}", e);
+            throw new Exception("ERROR CAUSE -> {} {}", e.getCause());
         }
     }
 }
