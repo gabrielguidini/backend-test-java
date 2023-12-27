@@ -74,11 +74,12 @@ public class CompanyController {
 
     @GetMapping("/getCompanyById")
     @ResponseStatus(HttpStatus.OK)
+    @Transactional
     public Company getCompanyById(@RequestParam @Valid UUID companyId) throws Exception {
         return companyService.findCompanyById(companyId);
     }
 
-    @PutMapping("/deleteCompany")
+    @PutMapping("/updateCompany")
     @ResponseStatus(HttpStatus.OK)
     @Transactional
     public ResponseEntity<Company> updateCompany(@RequestBody @Valid CompanyDTO commingCompany) {
@@ -92,5 +93,12 @@ public class CompanyController {
             log.error("CompanyController.updateCompany -> ERROR {}, {}",e ,e.getMessage());
             throw new RuntimeException("ERROR -> couldn't update company {} {} ", e.getCause());
         }
+    }
+
+    @DeleteMapping("/deleteCompany")
+    @ResponseStatus(HttpStatus.OK)
+    @Transactional
+    public HttpStatus deleteCompany(@RequestParam UUID companyId){
+        return companyService.removeCompany(companyId);
     }
 }

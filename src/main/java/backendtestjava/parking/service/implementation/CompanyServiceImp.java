@@ -6,6 +6,7 @@ import backendtestjava.parking.repository.CompanyRepository;
 import backendtestjava.parking.service.CompanyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class CompanyServiceImp implements CompanyService {
 
     @Override
     public List<Company> findCompanies() {
-        log.info("CompanyService.findCompanies() -> finished process");
+        log.info("CompanyService.findCompanies() -> finish_process");
         return companyRepository.findAll();
     }
 
@@ -41,7 +42,7 @@ public class CompanyServiceImp implements CompanyService {
     @Override
     public Company findCompanyById(UUID companyId) throws Exception {
 
-        log.info("CompanyServiceImp.findCompanyById() -> init process");
+        log.info("CompanyServiceImp.findCompanyById() -> init_process");
 
         Optional<Company> foundCompany = this.companyRepository.findById(companyId);
 
@@ -49,11 +50,17 @@ public class CompanyServiceImp implements CompanyService {
 
     }
 
-//    @Override
-//    public ResponseEntity<?> editCompany(Company commingCompany) {
-//        if(companyRepository.findById(commingCompany.getCompanyId()).isPresent()) {
-//
-//        }
-//
-//    }
+    @Override
+    public HttpStatus removeCompany(UUID companyId) {
+        log.info("CompanyServiceImp.removeCompany() -> init_process");
+
+        Optional<Company> company = companyRepository.findById(companyId);
+
+        companyRepository.delete(company.get());
+
+        log.info("CompanyServiceImp.removeCompany() -> finish_process");
+
+        return HttpStatus.ACCEPTED;
+    }
+
 }
